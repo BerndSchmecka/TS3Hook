@@ -282,7 +282,7 @@ bool is_myts_update(std::string input) {
 	replace_all(input, null_str, "_");
 	const auto find_pos_mytsdata = input.find(updatemytsdata);
 
-	return find_pos_mytsdata != std::string::npos ? true : false;
+	return (find_pos_mytsdata != std::string::npos);
 }
 
 void STD_DECL log_out_packet(char* packet, int length)
