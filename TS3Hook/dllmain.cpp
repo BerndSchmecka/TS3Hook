@@ -24,6 +24,7 @@ const char* MASK_OUT_1 = "xxxxxxxxxxxx";
 hookpt IN_HOOKS[] = {
 	hookpt{ 22, 22, packet_in_hook1, "\x49\x8B\x4E\x50\x48\x8B\x01\xC6\x44\x24\x20\x00\x4D\x8B\x4E\x58\x4D\x8B\xC6\x48\x8B\xD3\xFF\x50\x20\xEB", "xxxxxxxxxxxxxxxxxxxxxxxxxx" },
 	hookpt{ 22, 22, packet_in_hook2, "\x49\x8B\x4F\x50\x48\x8B\x01\xC6\x44\x24\x20\x00\x4D\x8B\x4F\x58\x4D\x8B\xC7\x48\x8B\xD3\xFF\x50\x20\x41", "xxxxxxxxxxxxxxxxxxxxxxxxxx" },
+	hookpt{ 22, 22, packet_in_hook2, "\x49\x8B\x4F\x50\x48\x8B\x01\xC6\x44\x24\x20\x00\x4D\x8B\x4F\x60\x4D\x8B\xC7\x48\x8B\xD3\xFF\x50\x20\x90", "xxxxxxxxxxxxxxxxxxxxxxxxxx" },
 };
 
 hookpt OUT_HOOKS[] = {
@@ -31,6 +32,7 @@ hookpt OUT_HOOKS[] = {
 	hookpt{ 18, 18, packet_out_hook2, "\x89\x45\xE0\x83\xF8\x01\x0F\x94\xC1\x88\x4C\x24\x50\x80\x7C\x24\x40\x00", "xxxxxxxxxxxxxxxxxx" },
 	hookpt{ 17, 17, packet_out_hook3, "\x48\x8B\x10\x48\x89\x54\x24\x50\x48\x89\x54\x24\x78\x48\x8B\x58\x08", "xxxxxxxxxxxxxxxxx" },
 	hookpt{ 18, 18, packet_out_hook4, "\x89\x85\xE0\x09\x00\x00\x41\x3B\xC6\x41\x0F\x94\xC4\x80\x7C\x24\x40\x00", "xxxxxxxxxxxxxxxxxx" },
+	hookpt{ 18, 18, packet_out_hook4, "\x89\x85\xE0\x09\x00\x00\x83\xF8\x01\x41\x0F\x94\xC4\x80\x7C\x24\x40\x00", "xxxxxxxxxxxxxxxxxx" },
 };
 #endif
 
@@ -74,6 +76,7 @@ std::vector<std::string> clientver;
 const std::string injectcmd(" msg=~cmd");
 const std::string outjectcmd(" msg=-cmd");
 const std::string clientinit("clientinit ");
+const std::string updatemytsdata("updatemytsdata ");
 const std::string sendtextmessage("sendtextmessage ");
 const std::string notifytextmessage("notifytextmessage ");
 const std::string hostmsg_mode("virtualserver_hostmessage_mode=3");
@@ -274,9 +277,23 @@ void STD_DECL log_in_packet(char* packet, int length)
 	CWRITE(modified ? CPINK : CCYAN, "%ls %.*s %ls\n", inprefix, length, packet, insuffix);
 }
 
+bool is_myts_update(std::string input) {
+	replace_all(input, "\a", "_");
+	replace_all(input, null_str, "_");
+	const auto find_pos_mytsdata = input.find(updatemytsdata);
+
+	return find_pos_mytsdata != std::string::npos ? true : false;
+}
+
 void STD_DECL log_out_packet(char* packet, int length)
 {
 	auto buffer = std::string(packet, length);
+
+	if (is_myts_update(buffer)) {
+		CWRITE(CRED, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
+		return;
+	}
+
 	replace_all(buffer, "\a", "_");
 	replace_all(buffer, null_str, "_");
 	memcpy(packet, buffer.c_str(), buffer.length());

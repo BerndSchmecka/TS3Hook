@@ -5,7 +5,7 @@
 #define PLUGIN_API_VERSION 23
 
 const char* ts3plugin_name() { return "TS3Hook"; }
-const char* ts3plugin_version() { return "1.3.0"; }
+const char* ts3plugin_version() { return "1.3.1"; }
 
 int ts3plugin_apiVersion() {
 	int target = -1;
@@ -29,7 +29,7 @@ int ts3plugin_apiVersion() {
 	return target;
 }
 
-const char* ts3plugin_author() { return "Splamy, Bluscream, alex720, exp111, Nicer"; }
+const char* ts3plugin_author() { return "Splamy, Bluscream, alex720, exp111, Nicer, Dunkelmann"; }
 const char* ts3plugin_description() { return "Prints command packets on the console.\n\nhttps://github.com/ReSpeak/TS3Hook"; }
 
 int ts3plugin_init() {
