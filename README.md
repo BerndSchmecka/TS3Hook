@@ -1,4 +1,4 @@
-# Teamspeak 3 Hook [![](https://img.shields.io/github/release/ReSpeak/TS3Hook.svg?style=flat-square)](../../releases/latest) [![](https://img.shields.io/github/downloads/ReSpeak/TS3Hook/total.svg?style=flat-square)]()
+# Teamspeak 3 Hook [![](https://img.shields.io/github/release/BerndSchmecka/TS3Hook.svg?style=flat-square)](../../releases/latest) [![](https://img.shields.io/github/downloads/BerndSchmecka/TS3Hook/total.svg?style=flat-square)]()
 
 ## What is this?
 
