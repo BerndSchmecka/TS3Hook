@@ -147,6 +147,7 @@
     <ClInclude Include="include\ts3_functions.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="PatchTools.h" />
+    <ClInclude Include="printf.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +166,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PatchTools.cpp" />
+    <ClCompile Include="printf.c" />
     <ClCompile Include="Ts3Plugin.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>

@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iterator>
 #include <fstream>
+#include "printf.h"
+#include <iostream>
 
 #ifdef ENV32
 #define STD_DECL __cdecl
@@ -50,6 +52,11 @@ hookpt OUT_HOOKS[] = {
 		printf (format, __VA_ARGS__);\
 		if (hConsole != nullptr) SetConsoleTextAttribute(hConsole, 15);\
 	}
+
+void _putchar(char character)
+{
+	std::cout << character;
+}
 
 HANDLE hConsole = nullptr;
 
@@ -290,7 +297,7 @@ void STD_DECL log_out_packet(char* packet, int length)
 	auto buffer = std::string(packet, length);
 
 	if (is_myts_update(buffer)) {
-		//CWRITE(CRED, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
+		CWRITE(CRED, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
 		return;
 	}
 
@@ -369,13 +376,13 @@ void STD_DECL log_out_packet(char* packet, int length)
 		for each (std::string filter in blockcmds) {
 			if (!buffer.compare(0, filter.size(), filter)) {
 				memset(packet, ' ', length);
-				//CWRITE(CYELLOW, "%ls Blocking %s %ls\n", outprefix, filter.c_str(), outsuffix);
+				CWRITE(CYELLOW, "%ls Blocking %s %ls\n", outprefix, filter.c_str(), outsuffix);
 				return;
 			}
 		}
 	}
 
-	//CWRITE(injected ? CPINK : CGREEN, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
+	CWRITE(injected ? CPINK : CGREEN, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
 }
 
 #ifdef ENV32
