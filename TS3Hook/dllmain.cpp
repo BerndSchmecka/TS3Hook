@@ -290,7 +290,7 @@ void STD_DECL log_out_packet(char* packet, int length)
 	auto buffer = std::string(packet, length);
 
 	if (is_myts_update(buffer)) {
-		CWRITE(CRED, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
+		//CWRITE(CRED, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
 		return;
 	}
 
@@ -335,6 +335,11 @@ void STD_DECL log_out_packet(char* packet, int length)
 			in_str.insert(std::get<0>(client_ver), clientver[0]);
 		}
 
+		auto nick = in_str.substr(std::get<0>(client_nickname), std::get<1>(client_nickname));
+		replace_all(nick, "#", "");
+		in_str.erase(std::get<0>(client_nickname), std::get<1>(client_nickname));
+		in_str.insert(std::get<0>(client_nickname), nick);
+
 		const auto length_difference = (long)buffer.size() - (long)in_str.size();
 		if (length_difference >= 0) {
 			memcpy(packet, in_str.c_str(), in_str.length());
@@ -364,13 +369,13 @@ void STD_DECL log_out_packet(char* packet, int length)
 		for each (std::string filter in blockcmds) {
 			if (!buffer.compare(0, filter.size(), filter)) {
 				memset(packet, ' ', length);
-				CWRITE(CYELLOW, "%ls Blocking %s %ls\n", outprefix, filter.c_str(), outsuffix);
+				//CWRITE(CYELLOW, "%ls Blocking %s %ls\n", outprefix, filter.c_str(), outsuffix);
 				return;
 			}
 		}
 	}
 
-	CWRITE(injected ? CPINK : CGREEN, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
+	//CWRITE(injected ? CPINK : CGREEN, "%ls %.*s %ls\n", outprefix, length, packet, outsuffix);
 }
 
 #ifdef ENV32
