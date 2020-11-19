@@ -67,6 +67,7 @@ extern "C"
 	SIZE_T packet_out_hook_return = 0x0;
 }
 std::string nickname;
+wchar_t metadata[256];
 bool nick_change_needed = false;
 LPCWSTR lpFileName = L".\\HookConf.ini";
 LPCWSTR lpSection = L"Config";
@@ -132,6 +133,14 @@ void ts3plugin_onConnectStatusChangeEvent(uint64 serverConnectionHandlerID, int 
 		std::string nick = "~cmdclientupdate~sclient_nickname=" + nickname;
 		ts3_functions.requestSendChannelTextMsg(serverConnectionHandlerID, nick.c_str(), cid, NULL);
 	}
+	if (newStatus == STATUS_CONNECTION_ESTABLISHED) {
+		ts3_functions.getClientID(serverConnectionHandlerID, &myID);
+		ts3_functions.getChannelOfClient(serverConnectionHandlerID, myID, &cid);
+		std::wstring metad(metadata);
+		std::string s(metad.begin(), metad.end());
+		std::string meta = "~cmdclientupdate~sclient_meta_data=" + s;
+		ts3_functions.requestSendChannelTextMsg(serverConnectionHandlerID, meta.c_str(), cid, NULL);
+	}
 }
 
 int ts3plugin_onServerErrorEvent(uint64 serverConnectionHandlerID, const char* errorMessage, unsigned int error, const char* returnCode, const char* extraMessage)
@@ -150,6 +159,7 @@ void create_config(const LPCWSTR file_name)
 	WritePrivateProfileString(lpSection, L"ignorecmds", L"", file_name);
 	WritePrivateProfileString(lpSection, L"blockcmds", L"connectioninfoautoupdate,setconnectioninfo,clientchatcomposing", file_name);
 	WritePrivateProfileString(lpSection, L"clientversion", L"3.?.? [Build: 5680278000]|Windows|DX5NIYLvfJEUjuIbCidnoeozxIDRRkpq3I9vVMBmE9L2qnekOoBzSenkzsg2lC9CMv8K5hkEzhr2TYUYSwUXCg==", file_name);
+	WritePrivateProfileString(lpSection, L"clientmeta", L"YourName@domain.tld", file_name);
 	WritePrivateProfileString(lpSection, L"bypass_modalquit", L"1", file_name);
 	WritePrivateProfileString(lpSection, L"teaspeak_anti_error", L"1", file_name);
 	WritePrivateProfileString(lpSection, L"useunicode", L"1", file_name);
@@ -210,6 +220,7 @@ void read_config()
 		replace_all(versionpart, " ", R"(\s)");
 		replace_all(versionpart, "/", R"(\/)");
 	}
+	GetPrivateProfileString(lpSection, L"clientmeta", L"", metadata, sizeofa(metadata), lpFileName);
 	GetPrivateProfileString(lpSection, L"bypass_modalquit", L"1", bypass_modalquit, sizeofa(bypass_modalquit), lpFileName);
 	GetPrivateProfileString(lpSection, L"teaspeak_anti_error", L"1", teaspeak_anti_error, sizeofa(teaspeak_anti_error), lpFileName);
 	wchar_t useunicode[1];
