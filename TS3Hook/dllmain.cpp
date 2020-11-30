@@ -55,7 +55,8 @@ hookpt OUT_HOOKS[] = {
 
 void _putchar(char character)
 {
-	std::cout << character;
+	//std::cout << character;
+	putc(character, stdout);
 }
 
 HANDLE hConsole = nullptr;
